@@ -1,10 +1,7 @@
-function[totalAvg]=offsetAllMain()
-
-clear;% clc;
+clear; clc;
 warning off;
 addpath(genpath(pwd));
-mode = 'new';
-fprintf('----Mode %s----\n',mode);
+fprintf('----Verify----\n');
 basePath = './ÇÃ»÷Æ«ÒÆÊý¾Ý/';
 dirs = dir(basePath);
 sampleNum = 270;
@@ -57,14 +54,9 @@ for x=1:size(dirs, 1)
     testLabel = GenerateNNLabel(size(testData, 1));
     
     %% test
-    if strcmp(mode,'old')
-        [accuracy,~]=NN(trainData, testData, testLabel);
-    elseif strcmp(mode,'new')
-        [accuracy,~]=NN_New(trainData, testData, testLabel);
-    else
-        disp("wrong!!!");
-    end
-    accuracyMat=[accuracyMat accuracy];
+    accuracy=verifyNN_New(trainData,testData,testLabel);
+    accuracyMat=[accuracyMat; accuracy];
 end
-totalAvg=mean(accuracyMat);
-fprintf('AVG: %.4f\n',totalAvg);
+accuracyMat=mean(accuracyMat,1);
+fprintf('-----------------\n without: %.4f  with: %.4f\n',accuracyMat(1),accuracyMat(2));
+fprintf('This is the equivalent of %g samples mistakes. \n',( accuracyMat(2)-accuracyMat(1) )* size(testLabel,1) );
